@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Kamya</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Great+Vibes&family=Playfair+Display:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master CSS -->
+    <link rel="stylesheet" href="css/master.css">
+    
+    <style>
+        body.realm-gallery {
+            background-color: #050505;
+            color: #f8f8f2;
+            overflow-x: hidden;
+            margin: 0;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .gallery-container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 20px 100px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 5rem;
+            color: #d4af37;
+            margin: 0;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .hero p {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            color: #e6c266;
+            margin: 15px 0 0 0;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+        }
+
+        .art-item {
+            background: #0a0a0a;
+            border: 6px solid #d4af37;
+            padding: 12px;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.15), inset 0 0 30px rgba(0,0,0,0.9);
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s, z-index 0s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .art-item:nth-child(1) { transform: rotate(-2deg); }
+        .art-item:nth-child(2) { transform: rotate(1deg); }
+        .art-item:nth-child(3) { transform: rotate(-1.5deg); }
+        .art-item:nth-child(4) { transform: rotate(1.5deg); grid-column: span 2; }
+        .art-item:nth-child(5) { transform: rotate(-1deg); }
+        .art-item:nth-child(6) { transform: rotate(2deg); }
+        .art-item:nth-child(7) { transform: rotate(-2deg); }
+        .art-item:nth-child(8) { transform: rotate(1deg); grid-column: span 2; }
+
+        .art-item:hover {
+            transform: scale(1.05) rotate(0deg);
+            z-index: 20;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.5), inset 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .art-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            filter: brightness(0.85) contrast(1.1) sepia(0.1);
+            transition: filter 0.5s ease;
+        }
+
+        .art-item:hover img {
+            filter: brightness(1) contrast(1.1) sepia(0);
+        }
+
+        .art-caption {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: #d4af37;
+            margin-top: 15px;
+            font-size: 1.3rem;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .spotlight-1, .spotlight-2, .spotlight-3, .spotlight-4 {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, rgba(212,175,55,0) 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .spotlight-1 { top: 5%; left: 5%; width: 700px; height: 700px; }
+        .spotlight-2 { top: 35%; right: -5%; width: 900px; height: 900px; }
+        .spotlight-3 { bottom: 20%; left: 10%; width: 800px; height: 800px; }
+        .spotlight-4 { bottom: 5%; right: 20%; width: 600px; height: 600px; }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bottom-nav {
+            text-align: center;
+            margin-top: 100px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-journey {
+            display: inline-block;
+            padding: 16px 45px;
+            background: transparent;
+            color: #d4af37;
+            border: 1px solid #d4af37;
+            text-decoration: none;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            border-radius: 40px;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-journey:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: #fce8a1;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4), inset 0 0 10px rgba(212, 175, 55, 0.2);
+        }
+
+        @media (max-width: 900px) {
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+            .art-item:nth-child(4), .art-item:nth-child(8) { grid-column: span 1; }
+            .hero h1 { font-size: 4rem; }
+        }
+
+        @media (max-width: 600px) {
+            .gallery-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 3rem; }
+            .hero p { font-size: 1.8rem; }
+            .gallery-container { padding-top: 100px; }
+        }
+    </style>
+</head>
+<body class="realm-gallery">
+
+    <!-- STANDARD NAV DOCK -->
+    <nav class="nav-dock">
+        <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> <span>Home</span></a>
+        <a href="story.html" class="nav-link"><i class="fa-solid fa-book-bookmark"></i> <span>Story</span></a>
+        <a href="gallery.html" class="nav-link"><i class="fa-solid fa-images"></i> <span>Gallery</span></a>
+        <a href="letters.html" class="nav-link"><i class="fa-solid fa-envelope-open-text"></i> <span>Letters</span></a>
+        <a href="garden.html" class="nav-link"><i class="fa-solid fa-seedling"></i> <span>Garden</span></a>
+        <a href="music.html" class="nav-link"><i class="fa-solid fa-compact-disc"></i> <span>Music</span></a>
+        <a href="album.html" class="nav-link"><i class="fa-solid fa-book-open"></i> <span>Album</span></a>
+        <a href="wishes.html" class="nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> <span>Wishes</span></a>
+        <a href="surprise.html" class="nav-link"><i class="fa-solid fa-gift"></i> <span>Surprise</span></a>
+    </nav>
+
+    <!-- STANDARD MUSIC DOCK -->
+    <div class="music-dock">
+        <div class="vinyl-btn"><div class="vinyl-label"><i class="fa-solid fa-heart"></i></div></div>
+        <div class="music-meta">
+            <span class="music-meta-title">Museum Ambience</span>
+            <span class="music-meta-status">Click to play</span>
+        </div>
+    </div>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="spotlight-1"></div>
+    <div class="spotlight-2"></div>
+    <div class="spotlight-3"></div>
+    <div class="spotlight-4"></div>
+
+    <div class="gallery-container">
+        <div class="hero">
+            <h1>Gallery of Grace</h1>
+            <p>Precious portraits of Kamya</p>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="art-item">
+                <img src="6070883797445579078.jpg" alt="Pure Elegance">
+                <div class="art-caption">Pure Elegance</div>
+            </div>
+            <div class="art-item">
+                <img src="6070883797445579079.jpg" alt="Radiant Smile">
+                <div class="art-caption">Radiant Smile</div>
+            </div>
+            <div class="art-item">
+                <img src="6070883797445579080.jpg" alt="Subtle Charm">
+                <div class="art-caption">Subtle Charm</div>
+            </div>
+            <div class="art-item">
+                <img src="6070883797445579081.jpg" alt="Coffee & Sunshine">
+                <div class="art-caption">Coffee & Sunshine</div>
+            </div>
+            <div class="art-item">
+                <img src="6070883797445579082.jpg" alt="Precious Moments">
+                <div class="art-caption">Precious Moments</div>
+            </div>
+            <div class="art-item">
+                <img src="6070883797445579083.jpg" alt="Unmatched Grace">
+                <div class="art-caption">Unmatched Grace</div>
+            </div>
+            <div class="art-item">
+                <img src="6070883797445579084.jpg" alt="Timeless Beauty">
+                <div class="art-caption">Timeless Beauty</div>
+            </div>
+            <div class="art-item">
+                <img src="6070883797445579085.jpg" alt="Gentle Eyes">
+                <div class="art-caption">Gentle Eyes</div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <a href="letters.html" class="btn-journey">Visit Love Letters</a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="js/engine.js"></script>
+    <script src="js/audio-engine.js"></script>
+    <script src="js/transitions.js"></script>
+    
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero Animation
+        gsap.fromTo('.hero', 
+            { opacity: 0, filter: 'blur(10px)' }, 
+            { opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'power2.out' }
+        );
+
+        // Art Items Reveal
+        const artItems = gsap.utils.toArray('.art-item');
+        
+        artItems.forEach((item, i) => {
+            gsap.fromTo(item,
+                { opacity: 0, y: 50, scale: 0.9, filter: 'blur(5px)' },
+                {
+                    scrollTrigger: {
+                        trigger: item,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    },
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    filter: 'blur(0px)',
+                    duration: 1.2,
+                    ease: 'power3.out',
+                    delay: (i % 3) * 0.15 // Stagger based on column position roughly
+                }
+            );
+        });
+
+        // Particle Canvas - Dust Motes
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const NUM_PARTICLES = 20;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Mote {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1 + 0.5; // 0.5px to 1.5px
+                this.alpha = Math.random() * 0.3 + 0.2; // 0.2 to 0.5
+                this.vx = (Math.random() - 0.5) * 0.2; // Very slow drift
+                this.vy = (Math.random() - 0.5) * 0.2;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Wrap around edges
+                if (this.x < -10) this.x = canvas.width + 10;
+                if (this.x > canvas.width + 10) this.x = -10;
+                if (this.y < -10) this.y = canvas.height + 10;
+                if (this.y > canvas.height + 10) this.y = -10;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 250, 240, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < NUM_PARTICLES; i++) {
+            particles.push(new Mote());
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+    </script>
+</body>
+</html>

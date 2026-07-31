@@ -1,0 +1,473 @@
+/* ==========================================================================
+   KAMYA — EMOTIONAL DIGITAL EXPERIENCE
+   Master Design System
+   ========================================================================== */
+
+/* ─── RESET ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+    scroll-behavior: auto;
+    font-size: 16px;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #f0eef5;
+    background: #030108;
+}
+
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+
+/* Hide default cursor on desktop */
+@media (min-width: 992px) {
+    body, a, button, input, textarea { cursor: none !important; }
+}
+
+/* ─── TYPOGRAPHY ─── */
+:root {
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-hand: 'Great Vibes', cursive;
+    --font-accent: 'Playfair Display', serif;
+}
+
+/* ─── GLOBAL LAYOUT ─── */
+.page-wrapper {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+}
+
+/* ─── WEBGL / CANVAS LAYERS ─── */
+#webgl-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#particle-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#cursor-trail-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: none;
+    z-index: 9998;
+}
+
+/* ─── ATMOSPHERIC LAYERS ─── */
+.atmosphere {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.atmo-fog {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(3,1,8,0.85) 100%);
+}
+
+.atmo-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+    animation: atmoFloat 16s ease-in-out infinite alternate;
+}
+
+.atmo-glow-1 {
+    top: -20%; left: 10%;
+    width: 60vw; height: 60vw;
+}
+
+.atmo-glow-2 {
+    bottom: -25%; right: -5%;
+    width: 70vw; height: 70vw;
+    animation-delay: -6s;
+}
+
+@keyframes atmoFloat {
+    0%   { transform: translate(0, 0) scale(1); opacity: 0.3; }
+    100% { transform: translate(50px, -40px) scale(1.15); opacity: 0.5; }
+}
+
+/* ─── PER-PAGE THEMES ─── */
+
+/* Home — Midnight Wonder */
+body.realm-home {
+    background: #030108;
+}
+body.realm-home .atmo-glow-1 { background: radial-gradient(circle, rgba(255,77,141,0.35), transparent 70%); }
+body.realm-home .atmo-glow-2 { background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 70%); }
+
+/* Story — Warm Golden */
+body.realm-story {
+    background: #0d0803;
+}
+body.realm-story .atmo-glow-1 { background: radial-gradient(circle, rgba(212,165,116,0.4), transparent 70%); }
+body.realm-story .atmo-glow-2 { background: radial-gradient(circle, rgba(255,140,66,0.2), transparent 70%); }
+
+/* Gallery — Museum Black */
+body.realm-gallery {
+    background: #06040d;
+}
+body.realm-gallery .atmo-glow-1 { background: radial-gradient(circle, rgba(212,175,55,0.2), transparent 70%); }
+body.realm-gallery .atmo-glow-2 { background: radial-gradient(circle, rgba(157,78,221,0.15), transparent 70%); }
+
+/* Letters — Candlelight */
+body.realm-letters {
+    background: #0c0506;
+}
+body.realm-letters .atmo-glow-1 { background: radial-gradient(circle, rgba(232,168,124,0.45), transparent 70%); }
+body.realm-letters .atmo-glow-2 { background: radial-gradient(circle, rgba(139,0,50,0.2), transparent 70%); }
+
+/* Garden — Magical Sunset */
+body.realm-garden {
+    background: #070d06;
+}
+body.realm-garden .atmo-glow-1 { background: radial-gradient(circle, rgba(248,164,200,0.3), transparent 70%); }
+body.realm-garden .atmo-glow-2 { background: radial-gradient(circle, rgba(240,192,64,0.25), transparent 70%); }
+
+/* Music — Smoky Lounge */
+body.realm-music {
+    background: #08060f;
+}
+body.realm-music .atmo-glow-1 { background: radial-gradient(circle, rgba(200,149,106,0.3), transparent 70%); }
+body.realm-music .atmo-glow-2 { background: radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%); }
+
+/* Album — Parchment */
+body.realm-album {
+    background: #0a0604;
+}
+body.realm-album .atmo-glow-1 { background: radial-gradient(circle, rgba(139,96,64,0.35), transparent 70%); }
+body.realm-album .atmo-glow-2 { background: radial-gradient(circle, rgba(212,175,55,0.15), transparent 70%); }
+
+/* Dreams — Deep Cosmos */
+body.realm-dreams {
+    background: #020210;
+}
+body.realm-dreams .atmo-glow-1 { background: radial-gradient(circle, rgba(157,78,221,0.35), transparent 70%); }
+body.realm-dreams .atmo-glow-2 { background: radial-gradient(circle, rgba(56,189,248,0.2), transparent 70%); }
+
+/* Wishes — Lantern Night */
+body.realm-wishes {
+    background: #060410;
+}
+body.realm-wishes .atmo-glow-1 { background: radial-gradient(circle, rgba(255,215,0,0.3), transparent 70%); }
+body.realm-wishes .atmo-glow-2 { background: radial-gradient(circle, rgba(255,107,53,0.2), transparent 70%); }
+
+/* Surprise — Void */
+body.realm-surprise {
+    background: #010104;
+}
+body.realm-surprise .atmo-glow-1 { background: radial-gradient(circle, rgba(255,77,141,0.15), transparent 70%); }
+body.realm-surprise .atmo-glow-2 { background: radial-gradient(circle, rgba(192,132,252,0.1), transparent 70%); }
+
+/* Credits — Silent */
+body.realm-credits {
+    background: #040308;
+}
+body.realm-credits .atmo-glow-1 { background: radial-gradient(circle, rgba(212,175,55,0.15), transparent 70%); }
+body.realm-credits .atmo-glow-2 { background: radial-gradient(circle, rgba(255,77,141,0.08), transparent 70%); }
+
+/* ─── CUSTOM CURSOR ─── */
+.cursor-dot {
+    position: fixed;
+    top: 0; left: 0;
+    width: 6px; height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10001;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px #fff, 0 0 20px rgba(255,77,141,0.6);
+    mix-blend-mode: screen;
+}
+
+.cursor-ring {
+    position: fixed;
+    top: 0; left: 0;
+    width: 36px; height: 36px;
+    border: 1.5px solid rgba(255,77,141,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    box-shadow: 0 0 12px rgba(255,77,141,0.15);
+}
+
+.cursor-ring.hovering {
+    width: 56px; height: 56px;
+    border-color: rgba(255,215,0,0.7);
+    background: rgba(255,215,0,0.06);
+    box-shadow: 0 0 20px rgba(255,215,0,0.25);
+}
+
+/* ─── NAVIGATION ─── */
+.nav-dock {
+    position: fixed;
+    top: 20px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 14px;
+    background: rgba(8,4,18,0.75);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 9999px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    opacity: 0;
+    animation: navFadeIn 1.5s ease 2.5s forwards;
+}
+
+@keyframes navFadeIn {
+    to { opacity: 1; }
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    border-radius: 9999px;
+    white-space: nowrap;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+.nav-link i {
+    font-size: 0.75rem;
+    transition: color 0.35s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #fff;
+    background: rgba(255,77,141,0.15);
+    box-shadow: 0 0 20px rgba(255,77,141,0.15), inset 0 0 12px rgba(255,77,141,0.05);
+}
+
+.nav-link.active {
+    border: 1px solid rgba(255,77,141,0.3);
+}
+
+.nav-link:hover i,
+.nav-link.active i {
+    color: #ff4d8d;
+}
+
+/* ─── MUSIC DOCK ─── */
+.music-dock {
+    position: fixed;
+    bottom: 24px; left: 24px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 20px 10px 12px;
+    background: rgba(8,4,18,0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 9999px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 0;
+    animation: navFadeIn 1s ease 3s forwards;
+}
+
+.music-dock:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255,77,141,0.3);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(255,77,141,0.1);
+}
+
+.vinyl-btn {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #222 25%, #0a0a0a 60%, #181818 100%);
+    border: 2px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    transition: box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.vinyl-btn:hover {
+    box-shadow: 0 4px 20px rgba(255,77,141,0.3);
+}
+
+.vinyl-label {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #ff4d8d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.4rem;
+}
+
+.vinyl-btn.spinning {
+    animation: spin 4s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.music-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.music-meta-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+}
+
+.music-meta-status {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.4);
+}
+
+/* ─── SCROLL REVEAL ─── */
+.reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    filter: blur(6px);
+    transition: none; /* GSAP handles this */
+}
+
+.reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+}
+
+/* ─── BUTTONS ─── */
+.btn-journey {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 36px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+    color: #fff;
+    background: linear-gradient(135deg, #ff4d8d, #c084fc);
+    border: none;
+    border-radius: 9999px;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 20px rgba(255,77,141,0.35);
+}
+
+.btn-journey::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #c084fc, #ff4d8d);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    z-index: -1;
+}
+
+.btn-journey:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 12px 40px rgba(255,77,141,0.5), 0 0 30px rgba(192,132,252,0.2);
+}
+
+.btn-journey:hover::before {
+    opacity: 1;
+}
+
+.btn-journey i {
+    transition: transform 0.3s ease;
+}
+
+.btn-journey:hover i {
+    transform: translateX(4px);
+}
+
+/* ─── PAGE TRANSITION OVERLAY ─── */
+.transition-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.transition-overlay.active {
+    pointer-events: all;
+}
+
+.transition-overlay canvas {
+    width: 100%;
+    height: 100%;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+    .nav-dock {
+        top: auto;
+        bottom: 12px;
+        gap: 2px;
+        padding: 5px 10px;
+        max-width: 96vw;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .nav-dock::-webkit-scrollbar { display: none; }
+    .nav-link { padding: 6px 10px; font-size: 0.72rem; }
+    .nav-link span { display: none; }
+    .music-dock { bottom: 70px; }
+}
+
+@media (max-width: 768px) {
+    .nav-link span { display: none; }
+    .nav-link { padding: 8px 12px; }
+    .music-dock { left: 12px; bottom: 70px; padding: 8px 14px 8px 10px; }
+}
+
+/* ─── UTILITY ─── */
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}

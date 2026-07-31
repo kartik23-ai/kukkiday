@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamya — The Infinite Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/master.css">
+    <style>
+        body.realm-surprise {
+            background-color: #010005;
+            color: #fff;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+        
+        #webgl-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .bloom-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255,100,180,0.45) 0%, rgba(192,132,252,0.2) 35%, rgba(1,0,5,0) 75%);
+            opacity: 0;
+            z-index: 3;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 15px;
+            pointer-events: none;
+            max-width: 90vw;
+        }
+
+        .text-line {
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(12px);
+            pointer-events: auto;
+        }
+
+        .line-1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            color: #e8a8d7;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(232, 168, 215, 0.4);
+        }
+
+        .line-2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.8rem, 5.5vw, 4.8rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffd700, #ff69b4, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.4));
+        }
+
+        .line-3 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            margin: 5px 0;
+            display: inline-block;
+            animation: heartPulse 1.8s infinite ease-in-out;
+        }
+
+        @keyframes heartPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.18); }
+            100% { transform: scale(1); }
+        }
+
+        .line-4 {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(3.8rem, 7vw, 6rem);
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(255, 105, 180, 0.8), 0 0 60px rgba(192, 132, 252, 0.5);
+            margin: 0;
+        }
+
+        .line-5 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+            color: rgba(255, 255, 255, 0.55);
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        .replay-link {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            margin-top: 40px;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            pointer-events: auto;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .replay-link:hover {
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .breathing {
+            animation: breathingText 4s infinite ease-in-out alternate;
+        }
+
+        @keyframes breathingText {
+            from { opacity: 0.9; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="realm-surprise">
+
+    <canvas id="webgl-canvas"></canvas>
+    <div class="bloom-overlay" id="bloom"></div>
+
+    <div class="content-layer">
+        <div class="text-line line-1" id="t1">You are my favorite person.</div>
+        <div class="text-line line-2" id="t2">Happy Girlfriend Day</div>
+        <div class="text-line line-3" id="t3">❤️</div>
+        <div class="text-line line-4" id="t4">Kamya</div>
+        <div class="text-line line-5" id="t5">Thank you for filling my universe with endless light.</div>
+        <a href="index.html" class="text-line replay-link" id="t6">↻ Replay the Journey</a>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="js/engine.js"></script>
+    <script src="js/audio-engine.js"></script>
+    <script src="js/transitions.js"></script>
+
+    <script>
+        // ─── PROCEDURAL GLOW MAP GENERATOR (No boxy particles!) ───
+        function createGlowTexture(size = 128) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            const center = size / 2;
+
+            const gradient = ctx.createRadialGradient(center, center, 0, center, center, center);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            gradient.addColorStop(0.2, 'rgba(255, 220, 240, 0.9)');
+            gradient.addColorStop(0.45, 'rgba(255, 105, 180, 0.5)');
+            gradient.addColorStop(0.75, 'rgba(192, 132, 252, 0.15)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        const glowMap = createGlowTexture();
+
+        // ─── THREE.JS SCENE SETUP ───
+        const canvas = document.getElementById('webgl-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 85;
+
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // 1. RADIANT SUN & VOLUMETRIC HALO LENS FLARE
+        const sunGroup = new THREE.Group();
+        sunGroup.position.set(0, 0, -35);
+        scene.add(sunGroup);
+
+        const sunPointLight = new THREE.PointLight(0xff69b4, 4, 300);
+        sunGroup.add(sunPointLight);
+
+        // Core sun sprite (ultra bright center)
+        const sunMat = new THREE.SpriteMaterial({
+            map: glowMap,
+            color: 0xffb6c1,
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            opacity: 0.95
+        });
+        const sunSprite = new THREE.Sprite(sunMat);
+        sunSprite.scale.set(45, 45, 1);
+        sunGroup.add(sunSprite);
+
+        // Outer halo ring
+        const haloMat = new THREE.SpriteMaterial({
+            map: glowMap,
+            color: 0xba55d3,
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            opacity: 0.5
+        });
+        const haloSprite = new THREE.Sprite(haloMat);
+        haloSprite.scale.set(85, 85, 1);
+        sunGroup.add(haloSprite);
+
+        // 2. GALAXY NEBULA STARDUST (Soft glowing particles in space)
+        const galaxyCount = 1800;
+        const galaxyGeo = new THREE.BufferGeometry();
+        const galaxyPos = new Float32Array(galaxyCount * 3);
+        const galaxyColors = new Float32Array(galaxyCount * 3);
+
+        const colorPalette = [
+            new THREE.Color(0xff4d8d),
+            new THREE.Color(0xc084fc),
+            new THREE.Color(0xffd700),
+            new THREE.Color(0x38bdf8),
+            new THREE.Color(0xffb6c1)
+        ];
+
+        for (let i = 0; i < galaxyCount; i++) {
+            const r = 30 + Math.random() * 220;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+
+            galaxyPos[i*3]     = r * Math.sin(phi) * Math.cos(theta);
+            galaxyPos[i*3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+            galaxyPos[i*3 + 2] = r * Math.cos(phi) - 20;
+
+            const c = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+            galaxyColors[i*3]     = c.r;
+            galaxyColors[i*3 + 1] = c.g;
+            galaxyColors[i*3 + 2] = c.b;
+        }
+
+        galaxyGeo.setAttribute('position', new THREE.BufferAttribute(galaxyPos, 3));
+        galaxyGeo.setAttribute('color', new THREE.BufferAttribute(galaxyColors, 3));
+
+        const galaxyMat = new THREE.PointsMaterial({
+            size: 3.5,
+            map: glowMap,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+        const galaxyMesh = new THREE.Points(galaxyGeo, galaxyMat);
+        scene.add(galaxyMesh);
+
+        // 3. MORPHING SILKY PINKISH HEART PARTICLES
+        const particleCount = 2500;
+        const heartGeo = new THREE.BufferGeometry();
+        const currentPos = new Float32Array(particleCount * 3);
+        const vortexPos = new Float32Array(particleCount * 3);
+        const targetHeartPos = new Float32Array(particleCount * 3);
+        const pColors = new Float32Array(particleCount * 3);
+
+        // Parametric 3D Heart formula with smooth curve distribution
+        function getHeartPoint(t, u) {
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+            const z = u * 5.5; // depth
+            const scale = 1.75;
+            return { x: x * scale, y: y * scale, z: z };
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            // Vortex spiral positions
+            const angle = Math.random() * Math.PI * 2 * 4;
+            const radius = 15 + Math.random() * 110;
+            const height = (Math.random() - 0.5) * 70;
+
+            vortexPos[i*3]     = Math.cos(angle) * radius;
+            vortexPos[i*3 + 1] = height;
+            vortexPos[i*3 + 2] = Math.sin(angle) * radius;
+
+            currentPos[i*3]     = vortexPos[i*3];
+            currentPos[i*3 + 1] = vortexPos[i*3 + 1];
+            currentPos[i*3 + 2] = vortexPos[i*3 + 2];
+
+            // Target Heart positions
+            const t = Math.random() * Math.PI * 2;
+            const u = (Math.random() - 0.5) * 2;
+            const hp = getHeartPoint(t, u);
+
+            targetHeartPos[i*3]     = hp.x + (Math.random() - 0.5) * 1.5;
+            targetHeartPos[i*3 + 1] = hp.y + (Math.random() - 0.5) * 1.5;
+            targetHeartPos[i*3 + 2] = hp.z + (Math.random() - 0.5) * 1.5;
+
+            // Vibrant Pink / Magenta / Gold Palette
+            const rand = Math.random();
+            let c;
+            if (rand < 0.55) {
+                c = new THREE.Color(0xff4d8d); // Rose Pink
+            } else if (rand < 0.85) {
+                c = new THREE.Color(0xff9ebb); // Soft Pink
+            } else {
+                c = new THREE.Color(0xffd700); // Warm Gold
+            }
+
+            pColors[i*3]     = c.r;
+            pColors[i*3 + 1] = c.g;
+            pColors[i*3 + 2] = c.b;
+        }
+
+        heartGeo.setAttribute('position', new THREE.BufferAttribute(currentPos, 3));
+        heartGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
+
+        const heartParticleMat = new THREE.PointsMaterial({
+            size: 4.5,
+            map: glowMap,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+
+        const heartParticleMesh = new THREE.Points(heartGeo, heartParticleMat);
+        scene.add(heartParticleMesh);
+
+        // 4. ANIMATION LOOP & GSAP TIMELINE
+        let time = 0;
+        let morphProgress = 0;
+        let isHeartFormed = false;
+
+        // Fade in heart particles
+        gsap.to(heartParticleMat, { opacity: 0.95, duration: 2.5, delay: 0.3 });
+
+        // Morphing particles into Heart shape
+        gsap.to({ p: 0 }, {
+            p: 1,
+            duration: 3.8,
+            delay: 2.5,
+            ease: "power2.inOut",
+            onUpdate: function() {
+                morphProgress = this.targets()[0].p;
+            },
+            onComplete: () => {
+                isHeartFormed = true;
+                triggerBloomAndText();
+            }
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.015;
+
+            // Rotate background galaxy & sun
+            galaxyMesh.rotation.y = time * 0.04;
+            galaxyMesh.rotation.z = Math.sin(time * 0.02) * 0.04;
+            sunSprite.scale.set(45 + Math.sin(time * 2) * 3, 45 + Math.sin(time * 2) * 3, 1);
+            haloSprite.scale.set(85 + Math.cos(time * 1.5) * 5, 85 + Math.cos(time * 1.5) * 5, 1);
+
+            // Morph particle positions (Vortex -> Heart)
+            const posAttr = heartGeo.attributes.position;
+            const arr = posAttr.array;
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+
+                const vx = vortexPos[i3] + Math.sin(time * 2 + i) * 2.5;
+                const vy = vortexPos[i3+1] + Math.cos(time * 1.5 + i) * 2.5;
+                const vz = vortexPos[i3+2] + Math.sin(time * 2.5 + i) * 2.5;
+
+                const hx = targetHeartPos[i3] + Math.sin(time * 3.5 + i * 0.1) * 0.5;
+                const hy = targetHeartPos[i3+1] + Math.cos(time * 3.5 + i * 0.1) * 0.5;
+                const hz = targetHeartPos[i3+2] + Math.sin(time * 2.5 + i * 0.1) * 0.5;
+
+                arr[i3]     = THREE.MathUtils.lerp(vx, hx, morphProgress);
+                arr[i3 + 1] = THREE.MathUtils.lerp(vy, hy, morphProgress);
+                arr[i3 + 2] = THREE.MathUtils.lerp(vz, hz, morphProgress);
+            }
+            posAttr.needsUpdate = true;
+
+            // 3D Motion & Heartbeat Pulse
+            if (morphProgress > 0.2) {
+                heartParticleMesh.rotation.y = Math.sin(time * 0.4) * 0.25;
+                heartParticleMesh.rotation.x = Math.cos(time * 0.25) * 0.08;
+
+                // Pulsing rhythm
+                const beat = 1 + Math.pow(Math.sin(time * 3.2), 4) * 0.09;
+                heartParticleMesh.scale.set(beat, beat, beat);
+            }
+
+            // Smooth camera drift
+            camera.position.x = Math.sin(time * 0.3) * 4;
+            camera.position.y = Math.cos(time * 0.25) * 3;
+            camera.lookAt(0, 0, 0);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ─── BLOOM & TEXT SEQUENCE ───
+        let textTriggered = false;
+        function triggerBloomAndText() {
+            if (textTriggered) return;
+            textTriggered = true;
+
+            const bloom = document.getElementById('bloom');
+
+            gsap.to(bloom, { opacity: 1, duration: 0.6, ease: "power2.in", onComplete: () => {
+                gsap.to(bloom, { opacity: 0, duration: 2.5, ease: "power2.out" });
+            }});
+
+            const tl = gsap.timeline();
+            const revealConfig = { y: 0, opacity: 1, filter: "blur(0px)", ease: "power3.out" };
+
+            // Line 1
+            tl.to("#t1", { ...revealConfig, duration: 1.5 });
+            tl.add(() => setTimeout(() => tl.resume(), 3500));
+            tl.addPause();
+
+            // Line 2
+            tl.to("#t2", { ...revealConfig, duration: 1.5 });
+            tl.add(() => setTimeout(() => tl.resume(), 3000));
+            tl.addPause();
+
+            // Line 3 (❤️)
+            tl.to("#t3", { ...revealConfig, duration: 1.0 });
+            tl.add(() => setTimeout(() => tl.resume(), 2500));
+            tl.addPause();
+
+            // Line 4 (Kamya)
+            tl.to("#t4", { ...revealConfig, duration: 2.0 });
+            tl.add(() => setTimeout(() => tl.resume(), 1200));
+            tl.addPause();
+
+            // Line 5
+            tl.to("#t5", { ...revealConfig, duration: 1.5 });
+
+            // Line 6 (Replay)
+            tl.to("#t6", { ...revealConfig, duration: 2.0 }, "+=2.5");
+
+            tl.call(() => {
+                document.querySelectorAll('.text-line').forEach(el => el.classList.add('breathing'));
+            });
+        }
+    </script>
+</body>
+</html>

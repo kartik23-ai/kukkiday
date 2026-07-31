@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Garden — Kamya's Realm</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/master.css">
+    
+    <style>
+        body.realm-garden {
+            background-color: #070d06;
+            color: #fdfbf7;
+        }
+
+        /* Multi-layer background */
+        .garden-sky {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            pointer-events: none;
+            background: linear-gradient(to bottom,
+                #070d06 0%,
+                #0d1a0a 30%,
+                #1a2a14 55%,
+                #2a3a20 70%,
+                rgba(60, 45, 20, 0.3) 85%,
+                rgba(80, 50, 25, 0.2) 100%
+            );
+        }
+
+        .garden-horizon {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40vh;
+            z-index: -2;
+            pointer-events: none;
+            background: linear-gradient(to top,
+                rgba(255, 180, 120, 0.06) 0%,
+                rgba(240, 192, 64, 0.04) 30%,
+                transparent 100%
+            );
+        }
+
+        .garden-glow {
+            position: fixed;
+            bottom: -15vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90vw;
+            height: 50vh;
+            border-radius: 50%;
+            background: radial-gradient(ellipse, rgba(248, 164, 200, 0.1) 0%, rgba(240, 192, 64, 0.06) 30%, transparent 65%);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Sunlight rays */
+        .sunray {
+            position: fixed;
+            top: -10vh;
+            z-index: -1;
+            pointer-events: none;
+            width: 200px;
+            height: 120vh;
+            opacity: 0.04;
+            transform-origin: top center;
+        }
+
+        .sunray-1 {
+            right: 15%;
+            background: linear-gradient(180deg, rgba(255, 220, 150, 0.8), transparent 70%);
+            transform: rotate(20deg);
+            animation: rayPulse 12s ease-in-out infinite alternate;
+        }
+
+        .sunray-2 {
+            right: 30%;
+            background: linear-gradient(180deg, rgba(255, 210, 120, 0.6), transparent 60%);
+            transform: rotate(25deg);
+            width: 150px;
+            animation: rayPulse 15s ease-in-out infinite alternate-reverse;
+        }
+
+        .sunray-3 {
+            right: 5%;
+            background: linear-gradient(180deg, rgba(255, 230, 180, 0.5), transparent 50%);
+            transform: rotate(15deg);
+            width: 120px;
+            animation: rayPulse 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes rayPulse {
+            0% { opacity: 0.02; }
+            100% { opacity: 0.06; }
+        }
+
+        .garden-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 10rem 2rem 6rem;
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 5vw, 5rem);
+            color: #ebd197;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            text-shadow: 0 0 40px rgba(235, 209, 151, 0.35);
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(8px);
+        }
+
+        .hero-subtitle {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+            color: #fcebd9;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Photo garden strip */
+        .photo-strip {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .garden-photo {
+            width: 180px;
+            height: 240px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 20px rgba(240, 192, 64, 0.05);
+            border: 2px solid rgba(240, 192, 64, 0.15);
+            opacity: 0;
+            transform: translateY(40px) rotate(0deg);
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+
+        .garden-photo:nth-child(1) { transform: translateY(40px) rotate(-3deg); }
+        .garden-photo:nth-child(2) { transform: translateY(60px) rotate(2deg); }
+        .garden-photo:nth-child(3) { transform: translateY(30px) rotate(-1deg); }
+        .garden-photo:nth-child(4) { transform: translateY(50px) rotate(3deg); }
+
+        .garden-photo:hover {
+            transform: translateY(-5px) rotate(0deg) scale(1.05) !important;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 30px rgba(240, 192, 64, 0.1);
+            border-color: rgba(240, 192, 64, 0.4);
+            z-index: 5;
+        }
+
+        .garden-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.9) saturate(1.1);
+            transition: filter 0.4s ease, transform 0.4s ease;
+        }
+
+        .garden-photo:hover img {
+            filter: brightness(1) saturate(1.2);
+            transform: scale(1.05);
+        }
+
+        /* Nature cards */
+        .nature-cards {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            max-width: 950px;
+            margin: 0 auto 4rem;
+            flex-wrap: wrap;
+        }
+
+        .nature-card {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            background: rgba(10, 20, 8, 0.5);
+            border: 1px solid rgba(240, 192, 64, 0.15);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            cursor: default;
+        }
+        
+        .nature-card:hover {
+            border-color: rgba(240, 192, 64, 0.4);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 25px rgba(240,192,64,0.08);
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 2.8rem;
+            color: #e5b95a;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px rgba(229, 185, 90, 0.4);
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .nature-card:hover .card-icon {
+            transform: scale(1.1);
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #fff;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .card-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.95rem;
+            color: #c8c8c0;
+            line-height: 1.65;
+            font-weight: 300;
+        }
+
+        .bottom-action {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .nature-cards { flex-direction: column; align-items: center; }
+            .nature-card { width: 100%; max-width: 400px; }
+            .photo-strip { gap: 1rem; }
+            .garden-photo { width: 140px; height: 190px; }
+        }
+    </style>
+</head>
+<body class="realm-garden">
+
+    <div class="atmosphere">
+        <div class="atmo-fog"></div>
+        <div class="atmo-glow-1"></div>
+        <div class="atmo-glow-2"></div>
+    </div>
+    
+    <div class="garden-sky"></div>
+    <div class="garden-horizon"></div>
+    <div class="garden-glow"></div>
+    <div class="sunray sunray-1"></div>
+    <div class="sunray sunray-2"></div>
+    <div class="sunray sunray-3"></div>
+
+    <canvas id="webgl-canvas"></canvas>
+    <canvas id="particle-canvas" style="z-index: 1; pointer-events: none; mix-blend-mode: screen;"></canvas>
+
+    <nav class="nav-dock">
+        <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> <span>Home</span></a>
+        <a href="story.html" class="nav-link"><i class="fa-solid fa-book-bookmark"></i> <span>Story</span></a>
+        <a href="gallery.html" class="nav-link"><i class="fa-solid fa-images"></i> <span>Gallery</span></a>
+        <a href="letters.html" class="nav-link"><i class="fa-solid fa-envelope-open-text"></i> <span>Letters</span></a>
+        <a href="garden.html" class="nav-link active"><i class="fa-solid fa-seedling"></i> <span>Garden</span></a>
+        <a href="music.html" class="nav-link"><i class="fa-solid fa-compact-disc"></i> <span>Music</span></a>
+        <a href="album.html" class="nav-link"><i class="fa-solid fa-book-open"></i> <span>Album</span></a>
+        <a href="wishes.html" class="nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> <span>Wishes</span></a>
+        <a href="surprise.html" class="nav-link"><i class="fa-solid fa-gift"></i> <span>Surprise</span></a>
+    </nav>
+
+    <div class="music-dock">
+        <div class="vinyl-btn"><div class="vinyl-label"><i class="fa-solid fa-heart"></i></div></div>
+        <div class="music-meta">
+            <span class="music-meta-title">Garden of Peace</span>
+            <span class="music-meta-status">Click to play</span>
+        </div>
+    </div>
+
+    <main class="garden-container">
+        <section class="hero-section">
+            <h1 class="hero-title">Dream Garden</h1>
+            <p class="hero-subtitle">A place of eternal peace and blooming love</p>
+        </section>
+
+        <section class="photo-strip" id="photo-strip">
+            <div class="garden-photo interactive">
+                <img src="6070883797445579090.jpg" alt="Garden memory">
+            </div>
+            <div class="garden-photo interactive">
+                <img src="6070883797445579091.jpg" alt="Garden memory">
+            </div>
+            <div class="garden-photo interactive">
+                <img src="6070883797445579092.jpg" alt="Garden memory">
+            </div>
+            <div class="garden-photo interactive">
+                <img src="6070883797445579093.jpg" alt="Garden memory">
+            </div>
+        </section>
+
+        <section class="nature-cards reveal-group">
+            <div class="nature-card tilt-card reveal-child interactive">
+                <i class="fa-solid fa-spa card-icon"></i>
+                <h3 class="card-title">Peace & Serenity</h3>
+                <p class="card-text">Your presence brings a calm that makes everything feel right, like the world slows down just for us.</p>
+            </div>
+            
+            <div class="nature-card tilt-card reveal-child interactive">
+                <i class="fa-solid fa-sun card-icon"></i>
+                <h3 class="card-title">Warmth & Sunlight</h3>
+                <p class="card-text">Your smile brightens the cloudiest of days effortlessly, radiating warmth that touches everything.</p>
+            </div>
+            
+            <div class="nature-card tilt-card reveal-child interactive">
+                <i class="fa-solid fa-clover card-icon"></i>
+                <h3 class="card-title">Endless Grace</h3>
+                <p class="card-text">A beauty that blooms brighter with every passing day, like a garden that never stops growing.</p>
+            </div>
+        </section>
+
+        <section class="bottom-action reveal">
+            <a href="music.html" class="btn-journey interactive">
+                <span>Enter Music Room</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="js/engine.js"></script>
+    <script src="js/audio-engine.js"></script>
+    <script src="js/transitions.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // ─── ENTRANCE ───
+            const entranceTL = gsap.timeline({ delay: 0.3 });
+            entranceTL
+                .to('.hero-title', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.5, ease: 'power3.out' })
+                .to('.hero-subtitle', { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' }, '-=1');
+
+            // ─── PHOTO STRIP ANIMATION ───
+            const photos = document.querySelectorAll('.garden-photo');
+            photos.forEach((photo, i) => {
+                const rot = [-3, 2, -1, 3][i] || 0;
+                gsap.to(photo, {
+                    scrollTrigger: {
+                        trigger: '#photo-strip',
+                        start: 'top 80%'
+                    },
+                    opacity: 1,
+                    y: 0,
+                    rotation: rot,
+                    duration: 1,
+                    delay: i * 0.15,
+                    ease: 'power3.out'
+                });
+            });
+
+            // ─── PARTICLE CANVAS: PETALS + BUTTERFLIES + FIREFLIES ───
+            const canvas = document.getElementById('particle-canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                let mouseX = -1000, mouseY = -1000;
+                
+                const resize = () => {
+                    width = window.innerWidth;
+                    height = window.innerHeight;
+                    canvas.width = width;
+                    canvas.height = height;
+                };
+                window.addEventListener('resize', resize);
+                resize();
+                
+                window.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                });
+
+                // Rose Petals
+                const petals = [];
+                const petalColors = [
+                    'rgba(255, 150, 180, 0.5)',
+                    'rgba(255, 130, 160, 0.4)',
+                    'rgba(255, 180, 200, 0.45)',
+                    'rgba(255, 200, 220, 0.35)',
+                    'rgba(240, 160, 190, 0.4)'
+                ];
+
+                for (let i = 0; i < 40; i++) {
+                    petals.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        vx: (Math.random() - 0.5) * 0.8,
+                        vy: Math.random() * 1.2 + 0.4,
+                        sizeX: Math.random() * 3 + 3,
+                        sizeY: Math.random() * 2 + 2,
+                        rotation: Math.random() * Math.PI * 2,
+                        rotSpeed: (Math.random() - 0.5) * 0.08,
+                        freq: Math.random() * 0.04 + 0.008,
+                        time: Math.random() * 100,
+                        color: petalColors[Math.floor(Math.random() * petalColors.length)]
+                    });
+                }
+                
+                // Butterflies
+                const butterflies = [];
+                const bColors = ['#e6a8d7', '#c8a2c8', '#ffffff', '#f0d0e0'];
+                for (let i = 0; i < 5; i++) {
+                    butterflies.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height * 0.6 + height * 0.1,
+                        tx: Math.random() * width,
+                        ty: Math.random() * height * 0.6 + height * 0.1,
+                        speed: Math.random() * 0.008 + 0.004,
+                        time: Math.random() * 100,
+                        color: bColors[i % bColors.length],
+                        size: Math.random() * 3 + 3
+                    });
+                }
+                
+                // Fireflies
+                const fireflies = [];
+                for (let i = 0; i < 18; i++) {
+                    fireflies.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        vx: (Math.random() - 0.5) * 0.4,
+                        vy: (Math.random() - 0.5) * 0.4,
+                        size: Math.random() * 1.5 + 0.8,
+                        time: Math.random() * 100,
+                        blinkSpeed: Math.random() * 0.04 + 0.015
+                    });
+                }
+
+                const animate = () => {
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Draw Petals
+                    petals.forEach(p => {
+                        p.time += p.freq;
+                        p.y += p.vy;
+                        p.x += Math.sin(p.time) * p.vx + Math.sin(p.time * 0.5) * 0.3;
+                        p.rotation += p.rotSpeed;
+                        
+                        if (p.y > height + 20) {
+                            p.y = -20;
+                            p.x = Math.random() * width;
+                        }
+                        
+                        ctx.save();
+                        ctx.translate(p.x, p.y);
+                        ctx.rotate(p.rotation);
+                        ctx.beginPath();
+                        ctx.ellipse(0, 0, p.sizeX, p.sizeY, 0, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.fill();
+                        ctx.restore();
+                    });
+                    
+                    // Draw Fireflies
+                    fireflies.forEach(f => {
+                        f.time += f.blinkSpeed;
+                        f.x += f.vx;
+                        f.y += f.vy;
+                        
+                        if (f.x < 0 || f.x > width) f.vx *= -1;
+                        if (f.y < 0 || f.y > height) f.vy *= -1;
+                        
+                        const alpha = (Math.sin(f.time) + 1) / 2 * 0.7 + 0.2;
+                        
+                        ctx.beginPath();
+                        ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 230, 150, ${alpha})`;
+                        ctx.shadowBlur = 12;
+                        ctx.shadowColor = `rgba(255, 210, 100, ${alpha * 0.8})`;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    });
+                    
+                    // Draw Butterflies
+                    butterflies.forEach(b => {
+                        b.time += 0.18;
+                        b.x += (b.tx - b.x) * b.speed;
+                        b.y += (b.ty - b.y) * b.speed;
+                        b.tx += (Math.random() - 0.5) * 15;
+                        b.ty += (Math.random() - 0.5) * 15;
+                        
+                        // Avoid cursor
+                        const dx = mouseX - b.x;
+                        const dy = mouseY - b.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        if (dist < 120) {
+                            b.tx -= dx * 0.4;
+                            b.ty -= dy * 0.4;
+                        }
+                        
+                        // Bounds
+                        if (b.tx < 50) b.tx = width * 0.2;
+                        if (b.tx > width - 50) b.tx = width * 0.8;
+                        if (b.ty < 50) b.ty = height * 0.2;
+                        if (b.ty > height - 50) b.ty = height * 0.8;
+                        
+                        const flap = Math.abs(Math.sin(b.time));
+                        
+                        ctx.save();
+                        ctx.translate(b.x, b.y);
+                        const angle = Math.atan2(b.ty - b.y, b.tx - b.x);
+                        ctx.rotate(angle + Math.PI/2);
+                        
+                        ctx.fillStyle = b.color;
+                        ctx.globalAlpha = 0.6;
+                        
+                        // Wings
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(-b.size * 2.2 * flap, -b.size * 2.2);
+                        ctx.lineTo(-b.size * 1.2 * flap, b.size * 1.5);
+                        ctx.fill();
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(b.size * 2.2 * flap, -b.size * 2.2);
+                        ctx.lineTo(b.size * 1.2 * flap, b.size * 1.5);
+                        ctx.fill();
+                        
+                        ctx.globalAlpha = 1;
+                        ctx.restore();
+                    });
+                    
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            }
+        });
+    </script>
+</body>
+</html>

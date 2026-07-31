@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vintage Lounge — Kamya's Realm</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/master.css">
+    
+    <style>
+        body.realm-music {
+            background-color: #08060f;
+            color: #f8f6f0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Smoky lounge atmosphere */
+        .lounge-atmosphere {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 15% 25%, rgba(200, 149, 106, 0.12) 0%, transparent 45%),
+                radial-gradient(ellipse at 85% 75%, rgba(200, 80, 50, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 50%, rgba(99, 102, 241, 0.04) 0%, transparent 50%);
+        }
+
+        .smoke-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.15;
+            background:
+                radial-gradient(ellipse at 30% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, rgba(255, 255, 255, 0.03) 0%, transparent 45%);
+            animation: smokeDrift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes smokeDrift {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, -10px) scale(1.05); }
+            100% { transform: translate(-15px, 5px) scale(0.98); }
+        }
+
+        .scene-container {
+            position: relative;
+            z-index: 10;
+            padding: 130px 20px 80px;
+            max-width: 1100px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 5vw, 5rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(10px);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-subtitle {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+            color: #e5a93d;
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            filter: blur(5px);
+        }
+
+        /* Vinyl Record */
+        .vinyl-stage {
+            position: relative;
+            margin: 0 auto 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: scale(0.85);
+            filter: blur(5px);
+        }
+
+        .vinyl-record {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: 
+                repeating-radial-gradient(
+                    #111 0, #111 2px, #1a1a1a 3px, #1a1a1a 4px
+                ),
+                conic-gradient(from 0deg, #0a0a0a, #1a1a1a, #0a0a0a, #1a1a1a, #0a0a0a),
+                linear-gradient(135deg, #222, #000);
+            background-blend-mode: overlay, overlay, normal;
+            box-shadow: 
+                0 15px 40px rgba(0,0,0,0.6), 
+                inset 0 0 15px rgba(255,255,255,0.08),
+                0 0 0 4px #1a1a1a,
+                0 0 0 6px #333;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: box-shadow 0.4s ease;
+        }
+
+        .vinyl-record:hover {
+            box-shadow: 
+                0 20px 50px rgba(229,169,61,0.15), 
+                inset 0 0 15px rgba(255,255,255,0.12),
+                0 0 0 4px #1a1a1a,
+                0 0 0 6px rgba(229, 169, 61, 0.3);
+        }
+
+        .vinyl-record::after {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d47087, #b24861);
+            border: 3px solid #222;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.2), 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        .vinyl-record i {
+            position: absolute;
+            z-index: 2;
+            color: #fff;
+            font-size: 1.4rem;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .vinyl-record.spinning {
+            animation: spinRecord 3.5s linear infinite;
+        }
+        
+        @keyframes spinRecord {
+            100% { transform: rotate(360deg); }
+        }
+
+        .vinyl-record.spinning:hover {
+            animation: spinRecordHover 3.5s linear infinite;
+        }
+
+        @keyframes spinRecordHover {
+            0% { transform: scale(1.02) rotate(0deg); }
+            100% { transform: scale(1.02) rotate(360deg); }
+        }
+
+        /* Tonearm */
+        .tonearm {
+            position: absolute;
+            top: -20px;
+            right: -50px;
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(to right, #888, #ccc, #888);
+            transform-origin: right center;
+            transform: rotate(-30deg);
+            border-radius: 2px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 3;
+        }
+
+        .tonearm::before {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: -6px;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, #aaa, #666);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .tonearm::after {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: -3px;
+            width: 12px;
+            height: 10px;
+            background: #999;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .tonearm.playing {
+            transform: rotate(-15deg);
+        }
+
+        /* Play status */
+        .play-status {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 1.5rem;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .play-status.active {
+            color: #e5a93d;
+        }
+
+        /* Equalizer */
+        .equalizer-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 5px;
+            height: 70px;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            padding: 0 20px;
+        }
+
+        .eq-bar {
+            width: 4px;
+            height: 8px;
+            background: linear-gradient(to top, #e5a93d, #d47087, #c084fc);
+            border-radius: 2px;
+            box-shadow: 0 0 6px rgba(212, 112, 135, 0.3);
+            transition: height 0.1s ease;
+        }
+
+        /* Song Info */
+        .song-info {
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .song-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #e5a93d;
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .song-desc {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.35);
+            max-width: 400px;
+            line-height: 1.5;
+            font-weight: 300;
+        }
+
+        .action-container {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        #particle-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            .vinyl-record { width: 200px; height: 200px; }
+            .tonearm { display: none; }
+        }
+    </style>
+</head>
+<body class="realm-music">
+    
+    <div class="atmosphere">
+        <div class="atmo-fog"></div>
+        <div class="atmo-glow-1"></div>
+        <div class="atmo-glow-2"></div>
+    </div>
+    <div class="lounge-atmosphere"></div>
+    <div class="smoke-layer"></div>
+
+    <canvas id="webgl-canvas"></canvas>
+    <canvas id="particle-canvas"></canvas>
+
+    <nav class="nav-dock">
+        <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> <span>Home</span></a>
+        <a href="story.html" class="nav-link"><i class="fa-solid fa-book-bookmark"></i> <span>Story</span></a>
+        <a href="gallery.html" class="nav-link"><i class="fa-solid fa-images"></i> <span>Gallery</span></a>
+        <a href="letters.html" class="nav-link"><i class="fa-solid fa-envelope-open-text"></i> <span>Letters</span></a>
+        <a href="garden.html" class="nav-link"><i class="fa-solid fa-seedling"></i> <span>Garden</span></a>
+        <a href="music.html" class="nav-link active"><i class="fa-solid fa-compact-disc"></i> <span>Music</span></a>
+        <a href="album.html" class="nav-link"><i class="fa-solid fa-book-open"></i> <span>Album</span></a>
+        <a href="wishes.html" class="nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> <span>Wishes</span></a>
+        <a href="surprise.html" class="nav-link"><i class="fa-solid fa-gift"></i> <span>Surprise</span></a>
+    </nav>
+
+    <div class="music-dock">
+        <div class="vinyl-btn"><div class="vinyl-label"><i class="fa-solid fa-heart"></i></div></div>
+        <div class="music-meta">
+            <span class="music-meta-title">Vintage Lounge</span>
+            <span class="music-meta-status">Click to play</span>
+        </div>
+    </div>
+
+    <main class="scene-container">
+        
+        <h1 class="hero-title">Music Room</h1>
+        <div class="hero-subtitle">A melody woven for Kamya</div>
+
+        <div class="vinyl-stage" id="vinyl-stage">
+            <div style="position: relative;">
+                <div class="vinyl-record" id="main-vinyl" onclick="togglePlayState()">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div class="tonearm" id="tonearm"></div>
+            </div>
+            <div class="play-status" id="play-status">Click the record to play</div>
+        </div>
+
+        <div class="equalizer-container" id="equalizer">
+            <!-- EQ bars generated by JS -->
+        </div>
+
+        <div class="song-info">
+            <div class="song-name">✦ Ambient Soundscape — Vintage Lounge</div>
+            <div class="song-desc">Synthesized ambient warmth composed with love, especially for Girlfriend Day</div>
+        </div>
+
+        <div class="action-container">
+            <a href="album.html" class="btn-journey interactive">
+                <span>Open Photo Album</span>
+                <i class="fa-solid fa-book-open"></i>
+            </a>
+        </div>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="js/engine.js"></script>
+    <script src="js/audio-engine.js"></script>
+    <script src="js/transitions.js"></script>
+    
+    <script>
+        const eqContainer = document.getElementById('equalizer');
+        const eqAnimations = [];
+        let isPagePlaying = false;
+
+        // Create 20 EQ Bars
+        for (let i = 0; i < 20; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'eq-bar';
+            eqContainer.appendChild(bar);
+        }
+        
+        const eqBars = document.querySelectorAll('.eq-bar');
+
+        // Entrance Animation
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline();
+            
+            tl.to('.hero-title', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out' })
+              .to('.hero-subtitle', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1, ease: 'power3.out' }, "-=0.8")
+              .to('#vinyl-stage', { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.4, ease: 'elastic.out(1, 0.6)' }, "-=0.6")
+              .to('#play-status', { opacity: 1, duration: 0.6 }, "-=0.4")
+              .to('.equalizer-container', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, "-=0.6")
+              .to('.song-info', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, "-=0.6")
+              .to('.action-container', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, "-=0.4");
+              
+            initParticleCanvas();
+        });
+
+        function togglePlayState() {
+            // Trigger the global audio engine
+            const vinylBtn = document.querySelector('.vinyl-btn');
+            if (vinylBtn) vinylBtn.click();
+            
+            isPagePlaying = !isPagePlaying;
+            const mainVinyl = document.getElementById('main-vinyl');
+            const tonearm = document.getElementById('tonearm');
+            const status = document.getElementById('play-status');
+            
+            if (isPagePlaying) {
+                mainVinyl.classList.add('spinning');
+                tonearm.classList.add('playing');
+                status.textContent = 'Now Playing — Vintage Lounge ♪';
+                status.classList.add('active');
+                animateEQ();
+            } else {
+                mainVinyl.classList.remove('spinning');
+                tonearm.classList.remove('playing');
+                status.textContent = 'Click the record to play';
+                status.classList.remove('active');
+                stopEQ();
+            }
+        }
+
+        function animateEQ() {
+            eqBars.forEach((bar, index) => {
+                const anim = gsap.to(bar, {
+                    height: () => Math.random() * 55 + 8 + 'px',
+                    duration: Math.random() * 0.3 + 0.25,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut",
+                    delay: Math.random() * 0.15
+                });
+                eqAnimations.push(anim);
+            });
+        }
+
+        function stopEQ() {
+            eqAnimations.forEach(anim => anim.kill());
+            eqAnimations.length = 0;
+            gsap.to(eqBars, { height: '8px', duration: 0.6, ease: 'power2.out' });
+        }
+
+        // Floating Musical Notes Canvas
+        function initParticleCanvas() {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            const notes = ['♪', '♫', '♩', '♬'];
+            const colors = ['rgba(229, 169, 61, ', 'rgba(212, 112, 135, ', 'rgba(192, 132, 252, ', 'rgba(255, 255, 255, '];
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Note {
+                constructor(initial) {
+                    this.reset(initial);
+                }
+                
+                reset(initial = false) {
+                    this.x = Math.random() * width;
+                    this.y = initial ? Math.random() * height : height + 30;
+                    this.size = Math.random() * 16 + 12;
+                    this.speedY = -(Math.random() * 0.5 + 0.15);
+                    this.speedX = Math.random() * 0.3 - 0.15;
+                    this.char = notes[Math.floor(Math.random() * notes.length)];
+                    this.colorBase = colors[Math.floor(Math.random() * colors.length)];
+                    this.opacity = initial ? Math.random() * 0.5 : 0;
+                    this.maxOpacity = Math.random() * 0.5 + 0.2;
+                    this.fadeSpeed = 0.004;
+                    this.rotation = (Math.random() - 0.5) * 0.5;
+                    this.rotSpeed = (Math.random() - 0.5) * 0.01;
+                    this.wobble = Math.random() * 100;
+                }
+                
+                update() {
+                    this.y += this.speedY;
+                    this.x += this.speedX + Math.sin(this.wobble * 0.02) * 0.3;
+                    this.wobble += 1;
+                    this.rotation += this.rotSpeed;
+                    
+                    if (this.y > height * 0.7 && this.opacity < this.maxOpacity) {
+                        this.opacity += this.fadeSpeed * 3;
+                    } else if (this.y < height * 0.25) {
+                        this.opacity -= this.fadeSpeed * 2;
+                    }
+                    
+                    if (this.y < -40 || (this.opacity <= 0 && this.y < height * 0.4)) {
+                        this.reset();
+                    }
+                }
+                
+                draw() {
+                    const alpha = Math.max(0, Math.min(this.maxOpacity, this.opacity));
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotation);
+                    ctx.font = `${this.size}px serif`;
+                    ctx.fillStyle = `${this.colorBase}${alpha})`;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = `${this.colorBase}${alpha * 0.6})`;
+                    ctx.fillText(this.char, 0, 0);
+                    ctx.shadowBlur = 0;
+                    ctx.restore();
+                }
+            }
+
+            for (let i = 0; i < 15; i++) {
+                particles.push(new Note(true));
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Golden Memory Path — Kamya</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Master CSS -->
+    <link rel="stylesheet" href="css/master.css">
+    
+    <style>
+        body.realm-story {
+            background-color: #0d0803;
+            color: #f4e8d1;
+        }
+
+        /* Warm atmospheric overlays */
+        .story-warmth {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(212, 165, 116, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(255, 140, 66, 0.06) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 50%, rgba(139, 96, 64, 0.04) 0%, transparent 60%);
+        }
+
+        .timeline-container {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 20px 100px;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        /* Timeline Header */
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 6rem;
+        }
+
+        .timeline-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 5vw, 5rem);
+            font-weight: 600;
+            color: #d4af37;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            margin-bottom: 0.8rem;
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(8px);
+        }
+
+        .timeline-subtitle {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+            color: #e8c9a0;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Central Timeline Line */
+        .timeline-svg {
+            position: absolute;
+            left: 50%;
+            top: 300px;
+            transform: translateX(-50%);
+            width: 10px;
+            height: calc(100% - 400px);
+            z-index: 1;
+            overflow: visible;
+        }
+
+        .timeline-node {
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle, #ffd700, #d4af37);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.3);
+            z-index: 2;
+        }
+
+        /* Memory Cards */
+        .memory-card {
+            width: 46%;
+            padding: 0;
+            background: rgba(30, 22, 14, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 16px;
+            margin-bottom: 120px;
+            position: relative;
+            z-index: 3;
+            opacity: 0;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            overflow: hidden;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .memory-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(212, 175, 55, 0.08), inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+
+        .memory-card:nth-child(odd) {
+            margin-right: auto;
+            margin-left: 0;
+            transform: translateX(-80px) rotateY(-4deg);
+        }
+
+        .memory-card:nth-child(even) {
+            margin-left: auto;
+            margin-right: 0;
+            transform: translateX(80px) rotateY(4deg);
+        }
+
+        .memory-photo-wrapper {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+        }
+
+        .memory-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(10%) saturate(1.15) brightness(0.95);
+            transition: filter 0.5s ease, transform 0.5s ease;
+        }
+
+        .memory-card:hover .memory-photo {
+            filter: sepia(5%) saturate(1.2) brightness(1.0);
+            transform: scale(1.03);
+        }
+
+        .memory-photo-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(30, 22, 14, 0.9) 100%);
+            pointer-events: none;
+        }
+
+        .memory-content {
+            padding: 1.8rem 2rem 2rem;
+        }
+
+        .memory-badge {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #d4af37;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .memory-badge::before {
+            content: '';
+            width: 20px;
+            height: 1px;
+            background: #d4af37;
+        }
+
+        .memory-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            margin: 0 0 0.8rem;
+            color: #fff8e7;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .memory-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #c4b59d;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .end-button-container {
+            text-align: center;
+            margin-top: 60px;
+            position: relative;
+            z-index: 2;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .memory-card {
+                width: 92%;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                margin-bottom: 60px;
+            }
+            .memory-card:nth-child(odd),
+            .memory-card:nth-child(even) {
+                transform: translateY(40px);
+            }
+            .timeline-svg, .timeline-node {
+                display: none;
+            }
+            .memory-photo-wrapper {
+                height: 220px;
+            }
+            .timeline-header {
+                margin-bottom: 3rem;
+            }
+        }
+    </style>
+</head>
+<body class="realm-story">
+
+    <div class="atmosphere">
+        <div class="atmo-fog"></div>
+        <div class="atmo-glow-1"></div>
+        <div class="atmo-glow-2"></div>
+    </div>
+    <div class="story-warmth"></div>
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Navigation Dock -->
+    <nav class="nav-dock">
+        <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> <span>Home</span></a>
+        <a href="story.html" class="nav-link active"><i class="fa-solid fa-book-bookmark"></i> <span>Story</span></a>
+        <a href="gallery.html" class="nav-link"><i class="fa-solid fa-images"></i> <span>Gallery</span></a>
+        <a href="letters.html" class="nav-link"><i class="fa-solid fa-envelope-open-text"></i> <span>Letters</span></a>
+        <a href="garden.html" class="nav-link"><i class="fa-solid fa-seedling"></i> <span>Garden</span></a>
+        <a href="music.html" class="nav-link"><i class="fa-solid fa-compact-disc"></i> <span>Music</span></a>
+        <a href="album.html" class="nav-link"><i class="fa-solid fa-book-open"></i> <span>Album</span></a>
+        <a href="wishes.html" class="nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> <span>Wishes</span></a>
+        <a href="surprise.html" class="nav-link"><i class="fa-solid fa-gift"></i> <span>Surprise</span></a>
+    </nav>
+
+    <!-- Music Dock -->
+    <div class="music-dock">
+        <div class="vinyl-btn"><div class="vinyl-label"><i class="fa-solid fa-heart"></i></div></div>
+        <div class="music-meta">
+            <span class="music-meta-title">Golden Memories</span>
+            <span class="music-meta-status">Click to play</span>
+        </div>
+    </div>
+
+    <main class="timeline-container">
+
+        <!-- Header -->
+        <div class="timeline-header">
+            <h1 class="timeline-title">Our Story</h1>
+            <p class="timeline-subtitle">A journey written in golden memories</p>
+        </div>
+
+        <!-- Timeline SVG -->
+        <svg class="timeline-svg" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="lineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#d4af37" stop-opacity="0.1"/>
+                    <stop offset="30%" stop-color="#ffd700" stop-opacity="1"/>
+                    <stop offset="70%" stop-color="#ffd700" stop-opacity="1"/>
+                    <stop offset="100%" stop-color="#d4af37" stop-opacity="0.1"/>
+                </linearGradient>
+            </defs>
+            <path id="timeline-path" fill="none" stroke="url(#lineGrad)" stroke-width="2" />
+        </svg>
+
+        <!-- Memory Cards -->
+        <div class="memory-card tilt-card" id="card-1">
+            <div class="memory-photo-wrapper">
+                <img src="6070883797445579078.jpg" alt="Chapter 1" class="memory-photo">
+                <div class="memory-photo-overlay"></div>
+            </div>
+            <div class="memory-content">
+                <div class="memory-badge">Chapter 01</div>
+                <h2 class="memory-title">The First Spark</h2>
+                <p class="memory-text">It started with a simple hello, but something in the air felt entirely different that day. My world suddenly shifted, painted with colors I had never seen before — all because of you.</p>
+            </div>
+        </div>
+
+        <div class="memory-card tilt-card" id="card-2">
+            <div class="memory-photo-wrapper">
+                <img src="6070883797445579079.jpg" alt="Chapter 2" class="memory-photo">
+                <div class="memory-photo-overlay"></div>
+            </div>
+            <div class="memory-content">
+                <div class="memory-badge">Chapter 02</div>
+                <h2 class="memory-title">Endless Conversations</h2>
+                <p class="memory-text">We spent hours just talking, losing track of time as the stars moved across the night sky. Every word felt like discovering a beautiful new universe we'd share forever.</p>
+            </div>
+        </div>
+
+        <div class="memory-card tilt-card" id="card-3">
+            <div class="memory-photo-wrapper">
+                <img src="6070883797445579080.jpg" alt="Chapter 3" class="memory-photo">
+                <div class="memory-photo-overlay"></div>
+            </div>
+            <div class="memory-content">
+                <div class="memory-badge">Chapter 03</div>
+                <h2 class="memory-title">Unmatched Radiance</h2>
+                <p class="memory-text">There are moments when you just glow, filling the room with an undeniable warmth. It's in those quiet seconds I realize how incredibly lucky I am to call you mine.</p>
+            </div>
+        </div>
+
+        <div class="memory-card tilt-card" id="card-4">
+            <div class="memory-photo-wrapper">
+                <img src="6070883797445579081.jpg" alt="Chapter 4" class="memory-photo">
+                <div class="memory-photo-overlay"></div>
+            </div>
+            <div class="memory-content">
+                <div class="memory-badge">Chapter 04</div>
+                <h2 class="memory-title">Golden Evening Walks</h2>
+                <p class="memory-text">Hand in hand, walking under the amber hues of the setting sun, everything feels perfect. These are the golden memories I will cherish for a lifetime.</p>
+            </div>
+        </div>
+
+        <div class="end-button-container reveal">
+            <a href="gallery.html" class="btn-journey interactive">
+                <i class="fa-solid fa-arrow-right"></i> Continue to Gallery
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    
+    <script src="js/engine.js"></script>
+    <script src="js/audio-engine.js"></script>
+    <script src="js/transitions.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // ─── ENTRANCE ANIMATION ───
+            const masterTL = gsap.timeline({ delay: 0.5 });
+            
+            masterTL.to('.timeline-title', {
+                opacity: 1, y: 0, filter: 'blur(0px)',
+                duration: 1.5, ease: 'power3.out'
+            })
+            .to('.timeline-subtitle', {
+                opacity: 1, y: 0,
+                duration: 1.2, ease: 'power3.out'
+            }, '-=1');
+
+            // ─── TIMELINE SVG ───
+            const svg = document.querySelector('.timeline-svg');
+            const path = document.getElementById('timeline-path');
+            const cards = document.querySelectorAll('.memory-card');
+            const container = document.querySelector('.timeline-container');
+
+            function updatePath() {
+                if (window.innerWidth <= 768) return;
+                
+                const height = container.clientHeight - 400;
+                svg.style.height = height + 'px';
+                path.setAttribute('d', `M 5 0 L 5 ${height}`);
+                const length = path.getTotalLength();
+                path.style.strokeDasharray = length;
+                path.style.strokeDashoffset = length;
+
+                // Remove old nodes
+                document.querySelectorAll('.timeline-node').forEach(n => n.remove());
+                
+                // Create new nodes at card positions
+                cards.forEach((card) => {
+                    const node = document.createElement('div');
+                    node.className = 'timeline-node';
+                    const cardTop = card.offsetTop - container.offsetTop + card.offsetHeight / 2;
+                    node.style.top = cardTop + 'px';
+                    container.appendChild(node);
+
+                    gsap.to(node, {
+                        scrollTrigger: {
+                            trigger: card,
+                            start: "top 60%",
+                        },
+                        scale: 1,
+                        duration: 0.8,
+                        ease: "elastic.out(1, 0.5)"
+                    });
+                });
+
+                // Animate the line drawing
+                gsap.to(path, {
+                    strokeDashoffset: 0,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: container,
+                        start: "top 40%",
+                        end: "bottom 70%",
+                        scrub: 1.2
+                    }
+                });
+            }
+
+            updatePath();
+            window.addEventListener('resize', updatePath);
+
+            // ─── CARD ENTRANCES ───
+            cards.forEach((card, index) => {
+                const isMobile = window.innerWidth <= 768;
+                const xOffset = isMobile ? 0 : (index % 2 === 0 ? -80 : 80);
+                const rotY = isMobile ? 0 : (index % 2 === 0 ? -4 : 4);
+                
+                gsap.set(card, { opacity: 0, x: xOffset, rotateY: rotY });
+
+                gsap.to(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 85%",
+                    },
+                    opacity: 1,
+                    x: 0,
+                    rotateY: 0,
+                    duration: 1,
+                    ease: "power3.out",
+                    delay: 0.15
+                });
+            });
+
+            // ─── PARTICLE CANVAS: WARM EMBER DUST ───
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            function resizeCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            const particles = [];
+            const emberColors = [
+                'rgba(255, 180, 50,',
+                'rgba(255, 200, 100,',
+                'rgba(212, 175, 55,',
+                'rgba(255, 160, 40,'
+            ];
+
+            for (let i = 0; i < 35; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4 - 0.15,
+                    size: Math.random() * 2.5 + 0.5,
+                    color: emberColors[Math.floor(Math.random() * emberColors.length)],
+                    alpha: Math.random() * 0.5 + 0.15,
+                    twinkleSpeed: Math.random() * 0.03 + 0.01,
+                    angle: Math.random() * Math.PI * 2
+                });
+            }
+
+            let time = 0;
+            function animateParticles() {
+                requestAnimationFrame(animateParticles);
+                ctx.clearRect(0, 0, width, height);
+                time += 0.016;
+                
+                for (const p of particles) {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.angle += p.twinkleSpeed;
+                    
+                    // Wrap around
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+
+                    const twinkle = (Math.sin(p.angle) + 1) / 2;
+                    const currentAlpha = p.alpha * (0.3 + twinkle * 0.7);
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `${p.color} ${currentAlpha})`;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = `${p.color} ${currentAlpha * 0.8})`;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+            animateParticles();
+        });
+    </script>
+</body>
+</html>
